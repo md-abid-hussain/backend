@@ -1,5 +1,5 @@
 const User = require('../model/User')
-const Note = require('../mode/Note')
+const Note = require('../model/Note')
 
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
