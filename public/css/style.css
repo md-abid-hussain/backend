@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto+Condensed&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Roboto Condensed', sans-serif;
+    background-color: rgb(36, 36, 36);
+    color: rgb(200, 190, 178);
+    display: grid;
+    min-height: 100vh;
+    place-content: center;
+    text-align: center;
+    font-size: 1.25rem;
+}
+
+h1{
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+}
