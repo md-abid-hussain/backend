@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt')
 // @access Private
 const getAllUsers =  asyncHandler(async (req,res)=>{
     const users = await User.find().select('-password').lean();
-    if(!users){
+    if(!users.length){
         return res.status(400).json({message:'No user found'})
     }
     res.json(users)
@@ -19,10 +19,10 @@ const getAllUsers =  asyncHandler(async (req,res)=>{
 // @route POST /users
 // @access Private
 const createUser =  asyncHandler(async (req,res)=>{
-    const {username,password,roles} = req.body
+    const {username,password} = req.body
 
     // Confirm data
-    if(!username || !password || !Array.isArray(roles) || !roles.length){
+    if(!username || !password){
         return res.status(400).json({
             message:"All fields are required"
         })
@@ -36,7 +36,7 @@ const createUser =  asyncHandler(async (req,res)=>{
     // Hash Password
     const hashedPassword = await bcrypt.hash(password,10)
 
-    const userObj = {username,password:hashedPassword,roles}
+    const userObj = {username,password:hashedPassword}
 
     // Create and store user
 
@@ -53,10 +53,10 @@ const createUser =  asyncHandler(async (req,res)=>{
 // @route PATCH /users
 // @access Private
 const updateUser =  asyncHandler(async (req,res)=>{
-    const {id,username,active,roles,password} = req.body
+    const {id,username,active,role,password} = req.body
 
     // Confirm data
-    if(!id || !username || !Array.isArray(roles) || !roles.length || !typeof active !== 'boolean'){
+    if(!id || !username || !Array.isArray(role) || !role.length || typeof active !== 'boolean'){
         return res.status(400).json({message:"All fields are required"})
     }
 
@@ -69,12 +69,12 @@ const updateUser =  asyncHandler(async (req,res)=>{
     // Check for duplicates
     const duplicate = await User.findOne({username}).lean().exec()
     // Allow updates to the original user
-    if (!duplicate  && duplicate?._id.toString() !== id){
+    if (duplicate  && duplicate?._id.toString() !== id){
          return res.status(409).json({message:"Duplicate username"})
     }
 
     user.username = username
-    user.roles = roles
+    user.role = role
     user.active  = active
 
     if(password){
@@ -84,7 +84,7 @@ const updateUser =  asyncHandler(async (req,res)=>{
 
     const updatedUser = await user.save()
 
-    res.json({message:`${updateUser.username} is updated`})
+    res.json({message:`${updatedUser.username} is updated`})
 })
 
 // @desc Delete A user
