@@ -4,16 +4,17 @@ const {Schema} = mongoose
 const userSchema = new Schema({
     username:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     password:{
         type:String,
         required:true
     },
-    role:[{
-        type:String,
-        default:"Employee"
-    }],
+    role:{
+        type:[String],
+        default:["Employee"]
+    },
     active:{
         type:Boolean,
         default:true
