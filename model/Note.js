@@ -1,4 +1,7 @@
 const mongoose = require('mongoose')
+
+const AutoIncrement = require('mongoose-sequence')(mongoose)
+
 const {Schema} = mongoose
 
 const noteSchema = new Schema({
@@ -11,14 +14,22 @@ const noteSchema = new Schema({
         type:String,
         required:true
     },
-    role:[{
+    text:{
         type:String,
-        default:"Employee"
-    }],
-    active:{
+        required:true
+    },
+    completed:{
         type:Boolean,
-        default:true
+        default:false
     }
+    }, {
+    timestamps:true
+})
+
+noteSchema.plugin(AutoIncrement,{
+    inc_field:'ticket',
+    id:'ticketNums',
+    start_seq:500
 })
 
 module.exports = mongoose.model('Note',noteSchema)
