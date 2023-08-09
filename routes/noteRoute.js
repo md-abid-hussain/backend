@@ -5,7 +5,7 @@ const notesController = require('../controller/notesController')
 router.route('/')
     .get(notesController.getAllNotes)
     .post(notesController.createNote)
-    // .patch()
-    // .delete()
+    .patch(notesController.updateNote)
+    .delete(notesController.deleteNote)
 
 module.exports = router
