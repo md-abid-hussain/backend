@@ -10,14 +10,24 @@ const getAllNotes = asyncHandler(async (req,res)=>{
     if(!notes.length){
         return res.status(400).json({message:"Notes not found"})
     }
-    res.json(notes)
+
+    const notesWithUser = await Promise.all(notes.map(async (note)=>{
+        const user = await prisma.user.findUnique({
+            where:{
+                id:note.userId
+            }
+        })
+        note.username = user.username
+        return note
+    }))
+    res.json(notesWithUser)
 })
 
 // @desc Get All Notes
 // @route GET /notes
 // @access Private
 const createNote = asyncHandler(async (req,res)=>{
-    const {userId,title,text,} = req.body
+    const {userId,title,text,ticketNum} = req.body
 
     if(!userId || !title || !text){
         return res.status(400).json({message:"All fields are required"})
@@ -33,9 +43,20 @@ const createNote = asyncHandler(async (req,res)=>{
         return res.status(400).json({message:"User does not exist"})
     }
 
+    const duplicateTitle = await prisma.note.findUnique({
+        where:{
+            title:title
+        }
+    })
+
+    if(duplicateTitle){
+        return res.status(400).json({message:"Duplicate title"})
+    }
+
     const note = await prisma.note.create({
         data:{
             userId:userId,
+            ticketNum:ticketNum,
             title:title,
             text:text
         }
