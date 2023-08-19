@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const notesController = require('../controller/notesController')
+const addTicketNum = require('../middleware/addTicketNum')
 
 router.route('/')
     .get(notesController.getAllNotes)
-    .post(notesController.createNote)
+    .post(addTicketNum,notesController.createNote)
     .patch(notesController.updateNote)
     .delete(notesController.deleteNote)
 
