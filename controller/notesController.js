@@ -73,12 +73,32 @@ const createNote = asyncHandler(async (req,res)=>{
 // @route PATCH /notes
 // @access Private
 const updateNote = asyncHandler(async (req,res)=>{
-    const {id,title,text,completed} = req.body
+    const {id,userId,title,text,completed} = req.body
     
-    if(!id || !title ||!text || typeof completed !== 'boolean'){
+    if(!id || !userId || !title ||!text || typeof completed !== 'boolean'){
         return res.status(400).json({
             message:"All fields are required"
         })
+    }
+
+    const noteExist = await prisma.note.findUnique({
+        where:{
+            id:id
+        }
+    })
+
+    if(!noteExist){
+        return res.status(400).json({message:`Note with id ${id} does not exist`})
+    }
+
+    const userExist = await prisma.user.findUnique({
+        where:{
+            id:userId
+        }
+    })
+
+    if (!userExist){
+        return res.status(400).json({message:'User does not exist'})
     }
 
     const duplicateTitle = await prisma.note.findUnique({
@@ -99,6 +119,7 @@ const updateNote = asyncHandler(async (req,res)=>{
         },
         data:{
             title:title,
+            userId:userId,
             text:text,
             completed:completed
         }
