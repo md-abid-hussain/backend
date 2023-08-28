@@ -28,9 +28,9 @@ const getAllUsers = asyncHandler(async (req,res)=>{
 // @route POST /users
 // @access Private
 const createUser = asyncHandler(async(req,res)=>{
-    const {username,password} = req.body
+    const {username,password,role} = req.body
 
-    if(!username || !password){
+    if(!username || !password  || !Array.isArray(role) || !role.length){
         return res.status(400).json({message:"All fields are required"})
     }
 
@@ -49,7 +49,8 @@ const createUser = asyncHandler(async(req,res)=>{
     const user = await prisma.user.create({
         data:{
             username:username,
-            password:hashedPassword
+            password:hashedPassword,
+            role:role
         }
     })
 
