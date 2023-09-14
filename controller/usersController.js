@@ -36,7 +36,10 @@ const createUser = asyncHandler(async(req,res)=>{
 
     const duplicate  = await prisma.user.findFirst({
         where:{
-            username:username
+            username:{
+                equals:username,
+                mode:'insensitive'
+            }
         }
     })
     if (duplicate){
@@ -86,7 +89,10 @@ const updateUser = async (req,res)=>{
     
     const duplicate = await prisma.user.findFirst({
         where:{
-            username:username
+            username:{
+                equals:username,
+                mode:'insensitive'
+            }
         }
     })
 

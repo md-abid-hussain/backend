@@ -43,9 +43,12 @@ const createNote = asyncHandler(async (req,res)=>{
         return res.status(400).json({message:"User does not exist"})
     }
 
-    const duplicateTitle = await prisma.note.findUnique({
+    const duplicateTitle = await prisma.note.findFirst({
         where:{
-            title:title
+            title:{
+                equals:title,
+                mode:'insensitive'
+            }
         }
     })
 
@@ -101,9 +104,12 @@ const updateNote = asyncHandler(async (req,res)=>{
         return res.status(400).json({message:'User does not exist'})
     }
 
-    const duplicateTitle = await prisma.note.findUnique({
+    const duplicateTitle = await prisma.note.findFirst({
         where:{
-            title:title
+            title:{
+                equals:title,
+                mode:'insensitive'
+            }
         }
     })
 
